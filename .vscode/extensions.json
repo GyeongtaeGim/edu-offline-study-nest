@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "ms-vsliveshare.vsliveshare",
+    "rangav.vscode-thunder-client"
+  ],
+}

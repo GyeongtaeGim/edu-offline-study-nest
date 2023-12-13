@@ -1,0 +1,27 @@
+{
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "build",
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "outDir": "build",
+    "baseUrl": "src",
+    "sourceMap": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "target": "ES6",
+    "module": "CommonJS",
+    "lib": [
+      "es6",
+      "esnext",
+      "DOM"
+    ],
+    "moduleResolution": "node",
+    "allowJs": true
+  }
+}

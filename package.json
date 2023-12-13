@@ -1,0 +1,61 @@
+{
+  "name": "edu-offline-study-nest",
+  "version": "1.0.0",
+  "description": "교육용 nest 프로젝트 파일입니다.",
+  "main": "index.js",
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "dev": "nest start --watch",
+    "lint": "eslint . --ext .js,.ts,.tsx",
+    "typeorm": "ts-node ./node_modules/typeorm/cli",
+    "typeorm-migrations": "yarn run typeorm migration:run -d ./src/typeorm.config.ts",
+    "typeorm-generate": "sh -c 'yarn run typeorm -d ./src/typeorm.config.ts migration:generate ./src/migrations/${0}'",
+    "typeorm-create": "sh -c 'yarn run typeorm migration:create ./src/migrations/${0}'",
+    "typeorm-revert": "yarn run typeorm -d ./src/typeorm.config.ts migration:revert"
+  },
+  "author": "Gyeongtae Gim",
+  "engines": {
+    "node": ">=16.18.0",
+    "pnpm": ">=8"
+  },
+  "packageManager": "^pnpm@8.10.5",
+  "dependencies": {
+    "@fastify/cookie": "^9.2.0",
+    "@nestjs/common": "^10.2.10",
+    "@nestjs/config": "^3.1.1",
+    "@nestjs/core": "^10.2.10",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/passport": "^10.0.3",
+    "@nestjs/platform-fastify": "^10.2.10",
+    "@nestjs/typeorm": "^10.0.1",
+    "better-sqlite3": "^9.2.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.24.3",
+    "nanoid": "^3.0.2",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "rxjs": "^7.8.1",
+    "sqlite3": "^5.1.6",
+    "typeorm": "^0.3.17"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.2.1",
+    "@nestjs/schematics": "^10.0.3",
+    "@swc/core": "^1.3.100",
+    "@types/cookie-parser": "^1.4.6",
+    "@types/node": "^20.10.3",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3"
+  }
+}
