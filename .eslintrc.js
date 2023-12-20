@@ -16,7 +16,6 @@ module.exports = {
         useTabs: false,
         jsxSingleQuote: true,
         singleQuote: true,
-        endOfLine: 'lf',
         printWidth: 140,
       },
     ],
