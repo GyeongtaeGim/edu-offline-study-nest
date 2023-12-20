@@ -21,18 +21,18 @@ export default class PostController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async createPost(@Request() req, @Body() body: CreatePostDto) {
-    return this.postService.create(req.user, body);
+    return this.postService.create(req.user.userId, body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':postId')
   async updatePost(@Request() req, @Param('postId') postId: string, @Body() body: UpdatePostDto) {
-    return this.postService.update(req.user, postId, body);
+    return this.postService.update(req.user.userId, postId, body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':postId')
   async deletePost(@Request() req, @Param('postId') postId: string) {
-    return this.postService.delete(req.user, postId);
+    return this.postService.delete(req.user.userId, postId);
   }
 }

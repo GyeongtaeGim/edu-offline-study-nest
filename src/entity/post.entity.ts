@@ -17,6 +17,7 @@ export default class PostEntity extends BaseEntity {
   @JoinColumn({ name: 'createdById' })
   createdBy: Promise<UserEntity>;
 
+  @Column()
   createdById: UserEntity['id'];
 
   @CreateDateColumn()

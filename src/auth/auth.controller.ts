@@ -1,6 +1,5 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import AuthService, { CreateUserDto } from './auth.service';
-import { AleadyExistError } from 'common/error';
 import LocalAuthGuard from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
