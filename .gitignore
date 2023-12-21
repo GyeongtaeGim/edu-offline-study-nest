@@ -13,8 +13,6 @@ build
 
 *.db
 
-.env
-
 # Editor directories and files
 .idea
 .DS_Store
