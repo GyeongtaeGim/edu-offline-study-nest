@@ -19,8 +19,8 @@ export default class AuthController {
   @Post('login')
   async login(@Req() req, @Res() res: FastifyReply) {
     const token = await this.authService.generateTokens(req.user.id, req.user.username);
-    res.setCookie('access_token', token.accessToken, { secure: false, httpOnly: false });
-    res.setCookie('refresh_token', token.refreshToken, { httpOnly: true, secure: true });
+    res.setCookie('access_token', token.accessToken, { secure: false, httpOnly: false, maxAge: 60 * 3, path: '/' });
+    res.setCookie('refresh_token', token.refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60, path: '/' });
     res.send(new User(req.user));
     return;
   }
@@ -36,8 +36,8 @@ export default class AuthController {
   @Post('refresh')
   async refresh(@Req() req, @Res() res: FastifyReply) {
     const token = await this.authService.refreshTokens(req.user.id);
-    res.setCookie('access_token', token.accessToken, { secure: false, httpOnly: false });
-    res.setCookie('refresh_token', token.refreshToken, { httpOnly: true, secure: true });
+    res.setCookie('access_token', token.accessToken, { secure: false, httpOnly: false, maxAge: 60 * 3, path: '/' });
+    res.setCookie('refresh_token', token.refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60, path: '/' });
     res.send();
     return;
   }
