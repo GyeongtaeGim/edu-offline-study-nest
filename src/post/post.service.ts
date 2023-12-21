@@ -1,40 +1,24 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MinLength } from 'class-validator';
 import { NotFoundError } from 'common/error';
 import PostEntity from 'entity/post.entity';
 import UserEntity from 'entity/user.entity';
 import { Repository } from 'typeorm';
-
-export class CreatePostDto {
-  @MinLength(4)
-  title: string;
-
-  @MinLength(0)
-  content: string;
-}
-
-export class UpdatePostDto {
-  @MinLength(4)
-  title: string;
-
-  @MinLength(0)
-  content: string;
-}
+import { CreatePostRequest, UpdatePostRequest } from '../dto/post.dto';
 
 @Injectable()
 export default class PostService {
   constructor(@InjectRepository(PostEntity) private posts: Repository<PostEntity>) {}
 
-  async get() {
-    return await this.posts.find();
+  async get(userId: UserEntity['id']) {
+    return await this.posts.find({ where: { createdById: userId }, relations: { createdBy: true } });
   }
 
   async getById(postId: PostEntity['id']) {
-    return await this.posts.findOneBy({ id: postId });
+    return await this.posts.findOne({ where: { id: postId }, relations: ['createdBy'] });
   }
 
-  async create(userId: UserEntity['id'], body: CreatePostDto) {
+  async create(userId: UserEntity['id'], body: CreatePostRequest) {
     return await this.posts
       .create({
         ...body,
@@ -43,7 +27,7 @@ export default class PostService {
       .save();
   }
 
-  async update(userId: UserEntity['id'], postId: PostEntity['id'], body: UpdatePostDto) {
+  async update(userId: UserEntity['id'], postId: PostEntity['id'], body: UpdatePostRequest) {
     const posts = await this.posts.findOneBy({ id: postId });
     if (!posts) throw new NotFoundError();
     if (posts.createdById !== userId) throw new ForbiddenException();

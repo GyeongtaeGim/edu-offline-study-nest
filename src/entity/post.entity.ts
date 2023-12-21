@@ -15,14 +15,14 @@ export default class PostEntity extends BaseEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.posts)
   @JoinColumn({ name: 'createdById' })
-  createdBy: Promise<UserEntity>;
+  createdBy: UserEntity;
 
   @Column()
   createdById: UserEntity['id'];
 
   @CreateDateColumn()
-  createDate: Date;
+  createdDate: Date;
 
   @UpdateDateColumn()
-  updateDate: Date;
+  updatedDate: Date;
 }

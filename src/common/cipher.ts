@@ -21,7 +21,6 @@ export const comparePassword = (plainPassword: string, hashedPassword: string, s
   new Promise<boolean>((resolve, reject) => {
     pbkdf2(plainPassword, salt, 9999, 64, 'sha512', (err, key) => {
       if (err) reject(err);
-      console.log(key.toString('base64'), '$$$$$$$$', hashedPassword, key.toString('base64') === hashedPassword);
       resolve(key.toString('base64') === hashedPassword);
     });
   });

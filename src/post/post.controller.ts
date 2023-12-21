@@ -1,38 +1,40 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
-import PostService, { CreatePostDto, UpdatePostDto } from './post.service';
-import { JwtAuthGuard } from 'auth/jwt-auth.guard';
+import PostService from './post.service';
+import AccessTokenGuard from 'auth/access-token.guard';
+import { CreatePostRequest, CreatePostResponse, PostResponse, UpdatePostRequest, UpdatePostResponse } from '../dto/post.dto';
 
 @Controller('/post')
 export default class PostController {
   constructor(private postService: PostService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AccessTokenGuard)
   @Get()
-  async getPost() {
-    return this.postService.get();
+  async getPost(@Request() req) {
+    const data = await this.postService.get(req.user.id);
+    return data.map((v) => new PostResponse(v));
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AccessTokenGuard)
   @Get(':postId')
   async getPostById(@Param('postId') postId: string) {
-    return this.postService.getById(postId);
+    return new PostResponse(await this.postService.getById(postId));
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AccessTokenGuard)
   @Post()
-  async createPost(@Request() req, @Body() body: CreatePostDto) {
-    return this.postService.create(req.user.userId, body);
+  async createPost(@Request() req, @Body() body: CreatePostRequest) {
+    return new CreatePostResponse(await this.postService.create(req.user.id, body));
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AccessTokenGuard)
   @Patch(':postId')
-  async updatePost(@Request() req, @Param('postId') postId: string, @Body() body: UpdatePostDto) {
-    return this.postService.update(req.user.userId, postId, body);
+  async updatePost(@Request() req, @Param('postId') postId: string, @Body() body: UpdatePostRequest) {
+    return new UpdatePostResponse(await this.postService.update(req.user.id, postId, body));
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AccessTokenGuard)
   @Delete(':postId')
   async deletePost(@Request() req, @Param('postId') postId: string) {
-    return this.postService.delete(req.user.userId, postId);
+    return this.postService.delete(req.user.id, postId);
   }
 }

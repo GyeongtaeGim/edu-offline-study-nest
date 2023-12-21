@@ -1,6 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import createId from 'common/createId';
 import PostEntity from './post.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export default class UserEntity extends BaseEntity {
@@ -20,8 +21,8 @@ export default class UserEntity extends BaseEntity {
   posts: Promise<PostEntity[]>;
 
   @CreateDateColumn()
-  createDate: Date;
+  createdDate: Date;
 
   @UpdateDateColumn()
-  updateDate: Date;
+  updatedDate: Date;
 }

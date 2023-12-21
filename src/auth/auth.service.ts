@@ -1,38 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsEmail, Length, MaxLength } from 'class-validator';
 import { comparePassword, createHashedPassword } from 'common/cipher';
 import { AleadyExistError } from 'common/error';
+import { LoginRequest } from 'dto/auth.dto';
+import { CreateUserRequest } from 'dto/user.dto';
 import UserEntity from 'entity/user.entity';
 import { Repository } from 'typeorm';
-
-export class CreateUserDto {
-  @IsEmail()
-  @MaxLength(64)
-  username: string;
-
-  @Length(8, 32)
-  password: string;
-}
-
-export class LoginDto {
-  @IsEmail()
-  @MaxLength(64)
-  username: string;
-
-  @Length(8, 32)
-  password: string;
-}
-
 @Injectable()
 export default class AuthService {
   constructor(
     @InjectRepository(UserEntity) private users: Repository<UserEntity>,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
-  async createUser(body: CreateUserDto) {
+  async createUser(body: CreateUserRequest) {
     if (await this.users.exist({ where: { username: body.username } })) throw new AleadyExistError('사용자가 이미 존재합니다.');
 
     const { salt, password } = await createHashedPassword(body.password);
@@ -45,10 +29,10 @@ export default class AuthService {
       .save();
   }
 
-  async validateUser(body: LoginDto) {
+  async validateUser(body: LoginRequest) {
     const user = await this.users.findOneBy({ username: body.username });
     if (!user || !(await comparePassword(body.password, user.password, user.salt))) return null;
-    return user;
+    return { id: user.id, username: user.username };
   }
 
   async login(user: UserEntity) {
@@ -56,5 +40,43 @@ export default class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async generateTokens(userId: string, username: string) {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          id: userId,
+          username,
+        },
+        {
+          secret: this.configService.get('JWT_SECRET'),
+          expiresIn: 60,
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          id: userId,
+          username,
+        },
+        {
+          secret: this.configService.get('JWT_SECRET'),
+          expiresIn: 24 * 60 * 60,
+        },
+      ),
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async refreshTokens(userId: string) {
+    const user = await this.users.findOneBy({ id: userId });
+
+    if (!user) throw new ForbiddenException();
+
+    return await this.generateTokens(user.id, user.username);
   }
 }
