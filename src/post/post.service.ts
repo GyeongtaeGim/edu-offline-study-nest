@@ -11,27 +11,30 @@ export default class PostService {
   constructor(@InjectRepository(PostEntity) private posts: Repository<PostEntity>) {}
 
   async get(userId: UserEntity['id']) {
-    return await this.posts.find({ where: { createdById: userId }, relations: { createdBy: true } });
+    return await this.posts.findBy({ createdById: userId });
   }
 
   async getById(postId: PostEntity['id']) {
-    return await this.posts.findOne({ where: { id: postId }, relations: ['createdBy'] });
+    return await this.posts.findOneBy({ id: postId });
   }
 
   async create(userId: UserEntity['id'], body: CreatePostRequest) {
-    return await this.posts
+    const { id } = await this.posts
       .create({
         ...body,
         createdById: userId,
       })
       .save();
+    return await this.posts.findOneBy({ id });
   }
 
   async update(userId: UserEntity['id'], postId: PostEntity['id'], body: UpdatePostRequest) {
     const posts = await this.posts.findOneBy({ id: postId });
     if (!posts) throw new NotFoundError();
     if (posts.createdById !== userId) throw new ForbiddenException();
-    return await this.posts.save({ id: postId, ...body });
+    await this.posts.save({ id: postId, ...body });
+    await posts.reload();
+    return posts;
   }
 
   async delete(userId: UserEntity['id'], postId: PostEntity['id']) {

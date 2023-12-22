@@ -13,7 +13,7 @@ export default class PostEntity extends BaseEntity {
   @Column({ type: 'text' })
   content: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.posts)
+  @ManyToOne(() => UserEntity, (user) => user.posts, { eager: true })
   @JoinColumn({ name: 'createdById' })
   createdBy: UserEntity;
 
