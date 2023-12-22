@@ -1,4 +1,4 @@
-import { MinLength } from 'class-validator';
+import { IsOptional, MinLength } from 'class-validator';
 import { User } from './user.dto';
 import PostEntity from 'entity/post.entity';
 
@@ -12,7 +12,9 @@ export class Post {
     this.id = data.id;
     this.title = data.title;
     this.content = data.content;
-    this.createdBy = new User(data.createdBy);
+    if (data.createdBy) {
+      this.createdBy = new User(data.createdBy);
+    }
   }
 }
 
@@ -30,10 +32,12 @@ export class CreatePostResponse extends Post {}
 
 export class UpdatePostRequest {
   @MinLength(4)
-  title: string;
+  @IsOptional()
+  title?: string;
 
   @MinLength(0)
-  content: string;
+  @IsOptional()
+  content?: string;
 }
 
 export class UpdatePostResponse extends Post {}
