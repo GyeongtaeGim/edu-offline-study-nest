@@ -1,7 +1,23 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import PostService from './post.service';
 import AccessTokenGuard from 'auth/access-token.guard';
-import { CreatePostRequest, CreatePostResponse, PostResponse, UpdatePostRequest, UpdatePostResponse } from '../dto/post.dto';
+import {
+  CreatePostRequest,
+  CreatePostResponse,
+  PostResponse,
+  UpdatePostRequest,
+  UpdatePostResponse,
+} from '../dto/post.dto';
 
 @Controller('/post')
 export default class PostController {
@@ -28,7 +44,11 @@ export default class PostController {
 
   @UseGuards(AccessTokenGuard)
   @Patch(':postId')
-  async updatePost(@Request() req, @Param('postId') postId: string, @Body() body: UpdatePostRequest) {
+  async updatePost(
+    @Request() req,
+    @Param('postId') postId: string,
+    @Body() body: UpdatePostRequest,
+  ) {
     return new UpdatePostResponse(await this.postService.update(req.user.id, postId, body));
   }
 

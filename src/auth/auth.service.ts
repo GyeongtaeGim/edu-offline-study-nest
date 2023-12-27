@@ -16,7 +16,8 @@ export default class AuthService {
   ) {}
 
   async createUser(body: CreateUserRequest) {
-    if (await this.users.exist({ where: { username: body.username } })) throw new BadRequestException({ code: 'aleady_exist' });
+    if (await this.users.exist({ where: { username: body.username } }))
+      throw new BadRequestException({ code: 'aleady_exist' });
 
     const { salt, password } = await createHashedPassword(body.password);
     return this.users
