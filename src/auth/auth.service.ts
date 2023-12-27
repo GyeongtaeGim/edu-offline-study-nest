@@ -1,9 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { comparePassword, createHashedPassword } from 'common/cipher';
-import { AleadyExistError } from 'common/error';
 import { LoginRequest } from 'dto/auth.dto';
 import { CreateUserRequest } from 'dto/user.dto';
 import UserEntity from 'entity/user.entity';
@@ -17,7 +16,7 @@ export default class AuthService {
   ) {}
 
   async createUser(body: CreateUserRequest) {
-    if (await this.users.exist({ where: { username: body.username } })) throw new AleadyExistError('사용자가 이미 존재합니다.');
+    if (await this.users.exist({ where: { username: body.username } })) throw new BadRequestException({ code: 'aleady_exist' });
 
     const { salt, password } = await createHashedPassword(body.password);
     return this.users

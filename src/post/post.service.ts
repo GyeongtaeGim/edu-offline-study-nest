@@ -1,6 +1,5 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NotFoundError } from 'common/error';
 import PostEntity from 'entity/post.entity';
 import UserEntity from 'entity/user.entity';
 import { Repository } from 'typeorm';
@@ -30,7 +29,7 @@ export default class PostService {
 
   async update(userId: UserEntity['id'], postId: PostEntity['id'], body: UpdatePostRequest) {
     const posts = await this.posts.findOneBy({ id: postId });
-    if (!posts) throw new NotFoundError();
+    if (!posts) throw new NotFoundException();
     if (posts.createdById !== userId) throw new ForbiddenException();
     await this.posts.save({ id: postId, ...body });
     await posts.reload();
@@ -39,7 +38,7 @@ export default class PostService {
 
   async delete(userId: UserEntity['id'], postId: PostEntity['id']) {
     const posts = await this.posts.findOneBy({ id: postId });
-    if (!posts) throw new NotFoundError();
+    if (!posts) throw new NotFoundException();
     if (posts.createdById !== userId) throw new ForbiddenException();
     return await this.posts.delete(postId);
   }
