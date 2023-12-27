@@ -39,7 +39,7 @@ export default class AuthController {
   async logout(@Res() res: FastifyReply) {
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
-    return;
+    return res.send();
   }
 
   @UseGuards(RefreshTokenGuard)
