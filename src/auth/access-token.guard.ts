@@ -13,7 +13,7 @@ export default class AccessTokenGuard extends AuthGuard('jwt') {
 
   handleRequest(err, user) {
     if (err || !user) {
-      throw err || new UnauthorizedException();
+      throw err || new UnauthorizedException({ code: 'token_invalid' });
     }
     return user;
   }
