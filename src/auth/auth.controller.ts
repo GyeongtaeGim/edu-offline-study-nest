@@ -19,7 +19,7 @@ export default class AuthController {
   @Post('login')
   async login(@Req() req, @Res() res: FastifyReply) {
     const token = await this.authService.generateTokens(req.user.id, req.user.username);
-    res.setCookie('access_token', token.accessToken, { secure: false, httpOnly: false, maxAge: 60 * 3, path: '/' });
+    res.setCookie('access_token', token.accessToken, { secure: false, httpOnly: false, maxAge: 24 * 60, path: '/' });
     res.setCookie('refresh_token', token.refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60, path: '/' });
     res.send(new User(req.user));
     return;
